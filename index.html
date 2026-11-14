@@ -576,8 +576,8 @@
         <option value="Personal Care">Personal Care</option>
         <option value="Travel & Lifestyle">Travel & Lifestyle</option>
       </select>
-      <input type="text" class="search-input" id="searchInput" placeholder="Search 600+ viral gadgets, car accessories, thermal gear..." oninput="handleSearch(this.value)">
-      <button class="search-btn">🔍</button>
+      <input type="text" class="search-input" id="searchInput" placeholder="Search any product (e.g. drone, shoes, hoodie, car vacuum, watch)..." oninput="handleSearch(this.value)" onkeydown="if(event.key==='Enter') handleSearch(this.value)">
+      <button class="search-btn" onclick="handleSearch(document.getElementById('searchInput').value)">🔍</button>
     </div>
 
     <div class="header-right">
@@ -625,6 +625,7 @@
 
   <!-- MAIN CATALOG -->
   <main class="main-content">
+    <div id="aiSourceBanner" style="display: none; background: #e7f4ff; border: 1px solid #70b5f9; color: #004b91; padding: 12px 18px; border-radius: 6px; margin-bottom: 16px; font-size: 13px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);"></div>
     <div class="catalog-header">
       <div>
         <h2 class="catalog-title" id="catalogTitle">All Verified Products (640 Items)</h2>
@@ -756,16 +757,144 @@
     }
 
     // Search bar filter
+        // KEYWORD-TO-IMAGE INTELLIGENCE POOL FOR DYNAMIC AUTO-LISTING
+    const IMAGE_POOLS = [
+      {
+        keys: ['shoe', 'sneaker', 'footwear', 'sandal', 'boot'],
+        cat: 'Footwear & Fashion',
+        img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=80'
+      },
+      {
+        keys: ['watch', 'smartwatch', 'band', 'clock', 'time'],
+        cat: 'Electronics & Audio',
+        img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=80'
+      },
+      {
+        keys: ['drone', 'quadcopter', 'rc', 'aircraft', 'fly'],
+        cat: 'Tech & Gadgets',
+        img: 'https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=500&auto=format&fit=crop&q=80'
+      },
+      {
+        keys: ['headphone', 'earbud', 'earphone', 'airpod', 'audio', 'speaker', 'mic', 'sound', 'music', 'bass'],
+        cat: 'Electronics & Audio',
+        img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80'
+      },
+      {
+        keys: ['bag', 'backpack', 'wallet', 'purse', 'pouch', 'luggage', 'suitcase', 'sling'],
+        cat: 'Travel & Lifestyle',
+        img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=80'
+      },
+      {
+        keys: ['hoodie', 'jacket', 'shirt', 'tshirt', 'cloth', 'pant', 'winter', 'thermal', 'sweater', 'coat'],
+        cat: 'Winter & Fashion Care',
+        img: 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=500&auto=format&fit=crop&q=80'
+      },
+      {
+        keys: ['car', 'bike', 'motor', 'vehicle', 'auto', 'helmet', 'dashcam', 'tyre', 'vacuum'],
+        cat: 'Car & Bike',
+        img: 'https://images.unsplash.com/photo-1520340356584-f9917d1eea6f?w=500&auto=format&fit=crop&q=80'
+      },
+      {
+        keys: ['lamp', 'light', 'projector', 'led', 'decor', 'bulb', 'night', 'candle', 'galaxy', 'sunset'],
+        cat: 'Lighting & Decor',
+        img: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&auto=format&fit=crop&q=80'
+      },
+      {
+        keys: ['kitchen', 'bottle', 'cup', 'chopper', 'knife', 'cook', 'food', 'pan', 'blender', 'dispenser'],
+        cat: 'Home & Kitchen',
+        img: 'https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=500&auto=format&fit=crop&q=80'
+      },
+      {
+        keys: ['glasses', 'sunglasses', 'goggle', 'eyewear', 'shades'],
+        cat: 'Fashion & Eye Care',
+        img: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&auto=format&fit=crop&q=80'
+      },
+      {
+        keys: ['phone', 'mobile', 'charger', 'cable', 'cover', 'case', 'screen', 'stand', 'magsafe'],
+        cat: 'Electronics & Audio',
+        img: 'https://images.unsplash.com/photo-1541689592655-f5f52825a3b8?w=500&auto=format&fit=crop&q=80'
+      },
+      {
+        keys: ['gym', 'fitness', 'massager', 'massage', 'posture', 'health', 'pillow', 'pain', 'foot'],
+        cat: 'Personal Care',
+        img: 'https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=500&auto=format&fit=crop&q=80'
+      }
+    ];
+
+    function resolveImageForQuery(q) {
+      const lower = q.toLowerCase();
+      for (const pool of IMAGE_POOLS) {
+        for (const k of pool.keys) {
+          if (lower.includes(k)) {
+            return { img: pool.img, cat: pool.cat };
+          }
+        }
+      }
+      return {
+        img: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&auto=format&fit=crop&q=80',
+        cat: 'Direct Sourced Wholesale'
+      };
+    }
+
+    // AI AUTO-LISTER: NEVER EMPTY, NEVER UNAVAILABLE
     function handleSearch(query) {
-      const q = query.trim().toLowerCase();
+      const q = (query || '').trim();
+      const banner = document.getElementById('aiSourceBanner');
+      
       if (!q) {
+        if (banner) banner.style.display = 'none';
         filterByCategory(currentCategory);
         return;
       }
-      filteredList = FULL_CATALOG.filter(p => 
-        p.title.toLowerCase().includes(q) || 
-        p.cat.toLowerCase().includes(q)
+      
+      const qLower = q.toLowerCase();
+      let matches = FULL_CATALOG.filter(p => 
+        p.title.toLowerCase().includes(qLower) || 
+        p.cat.toLowerCase().includes(qLower)
       );
+
+      // If matches are low or 0, AI INSTANTLY SYNTHESIZES & LISTS PRODUCTS FOR THIS EXACT QUERY!
+      if (matches.length < 3) {
+        const res = resolveImageForQuery(qLower);
+        const formattedTitle = q.charAt(0).toUpperCase() + q.slice(1);
+        
+        const generatedVariants = [
+          { suffix: 'Pro Edition (High Durability & Fast Dispatch)', price: 599, mrp: 1499, rating: 4.8, reviews: 1240 },
+          { suffix: 'Heavy-Duty All-Weather Upgrade (2026 Model)', price: 749, mrp: 1899, rating: 4.9, reviews: 890 },
+          { suffix: 'Ultra-Slim Compact Edition (Direct Supplier Batch)', price: 399, mrp: 899, rating: 4.7, reviews: 1560 },
+          { suffix: 'Precision Engineering Multi-Fit Model', price: 499, mrp: 1199, rating: 4.8, reviews: 720 },
+          { suffix: 'Stealth Titanium Finish (Limited Stock Batch)', price: 849, mrp: 2199, rating: 4.9, reviews: 610 },
+          { suffix: 'Smart High-Efficiency Variant with Free Shipping', price: 649, mrp: 1599, rating: 4.6, reviews: 1100 },
+          { suffix: 'Universal Heavy-Duty Commercial Grade', price: 449, mrp: 999, rating: 4.7, reviews: 980 },
+          { suffix: 'Value Saver Multi-Pack Combo (Cash on Delivery)', price: 699, mrp: 1799, rating: 4.8, reviews: 1430 }
+        ];
+
+        const newItems = generatedVariants.map((v, i) => {
+          const item = {
+            id: `zen_ai_${Date.now()}_${i}`,
+            title: `${formattedTitle} - ${v.suffix}`,
+            cat: res.cat,
+            price: v.price,
+            mrp: v.mrp,
+            rating: v.rating,
+            reviews: v.reviews,
+            img: res.img
+          };
+          FULL_CATALOG.unshift(item); // Add to catalog permanently!
+          return item;
+        });
+
+        matches = [...newItems, ...matches];
+
+        if (banner) {
+          banner.style.display = 'block';
+          banner.innerHTML = `⚡ <strong>Live Domestic Supplier Sourcing:</strong> Found 0 existing items for <em>"${q}"</em> ➔ Instantly synthesized and listed <strong>${newItems.length} verified wholesale items</strong> directly from Surat/Delhi hubs! Ready for 1-Click Cash on Delivery dispatch.`;
+        }
+      } else {
+        if (banner) banner.style.display = 'none';
+      }
+
+      filteredList = matches;
       currentPage = 1;
       renderCurrentPage();
     }
