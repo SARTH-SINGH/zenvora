@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraGear India | Viral Tech, Car & Utility Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card: #131b2e;
+      --card-border: #233152;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --gold: #f59e0b;
+      --green: #10b981;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+    .top-banner {
+      background: linear-gradient(90deg, #1e3a8a, #3b82f6, #0284c7);
+      color: white;
+      text-align: center;
+      padding: 9px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 20px;
+      background: rgba(19, 27, 46, 0.95);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .logo span {
+      color: #60a5fa;
+    }
+    .cart-indicator {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .cart-badge {
+      background: #2563eb;
+      color: white;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 16px 0 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      scrollbar-width: none;
+    }
+    .filter-btn {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .filter-btn.active {
+      background: #2563eb;
+      color: white;
+      border-color: #3b82f6;
+    }
+
+    /* BUNDLE COMBO BANNER */
+    .bundle-card {
+      background: linear-gradient(135deg, #1e1b4b, #1e293b);
+      border: 2px solid #6366f1;
+      border-radius: 18px;
+      padding: 16px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.25);
+    }
+    .bundle-tag {
+      background: #4f46e5;
+      color: white;
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+    .bundle-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+    .bundle-desc {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .bundle-items {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .bundle-thumb {
+      width: 65px;
+      height: 65px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid var(--card-border);
+    }
+    .bundle-plus {
+      font-size: 20px;
+      font-weight: 800;
+      color: #a5b4fc;
+    }
+    .bundle-pricing {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .bundle-price-box .price {
+      font-size: 22px;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+    .bundle-price-box .mrp {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-decoration: line-through;
+      margin-left: 6px;
+    }
+    .btn-bundle {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* PRODUCT GRID */
+    .product-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .prod-item {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .prod-item:hover {
+      border-color: #3b82f6;
+    }
+    .prod-thumb {
+      width: 100px;
+      height: 100px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #000;
+    }
+    .prod-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .prod-category {
+      font-size: 10px;
+      color: #38bdf8;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+    .prod-name {
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.35;
+      color: #f8fafc;
+      margin-bottom: 6px;
+    }
+    .prod-rating {
+      font-size: 11px;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .prod-price-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .prod-price {
+      font-size: 18px;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+    .prod-mrp {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-decoration: line-through;
+      margin-left: 4px;
+    }
+    .btn-add {
+      background: rgba(37, 99, 235, 0.15);
+      border: 1px solid #3b82f6;
+      color: #60a5fa;
+      padding: 7px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-add:hover {
+      background: #2563eb;
+      color: white;
+    }
+    .btn-add.in-cart {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+
+    /* FLOATING CHECKOUT DRAWER */
+    .checkout-drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0f172a;
+      border-top: 2px solid #3b82f6;
+      padding: 16px 20px;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
+      z-index: 200;
+      display: none;
+    }
+    .checkout-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart-summary-text {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .cart-total-price {
+      font-size: 22px;
+      font-weight: 800;
+      color: #38bdf8;
+    }
+    .btn-checkout {
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: white;
+      border: none;
+      padding: 13px 24px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
+    }
+
+    /* ORDER MODAL */
+    .order-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(5px);
+      z-index: 300;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .order-modal {
+      background: #0f172a;
+      border: 1px solid #3b82f6;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .input-group {
+      margin-bottom: 12px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .input-group input, .input-group textarea {
+      width: 100%;
+      padding: 11px 13px;
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: white;
+      font-size: 13px;
+    }
+    .btn-submit-order {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-banner">
+    ⚡ FESTIVE MEGA OFFER: BUY ANY 2 GADGETS & GET AN EXTRA ₹100 DISCOUNT + FREE COD!
+  </div>
+
+  <nav class="nav">
+    <div class="logo">Aura<span>Gear</span></div>
+    <div class="cart-indicator" onclick="openCheckout()">
+      🛒 Cart <span class="cart-badge" id="cartCount">0</span>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <!-- BUNDLE / FREQUENTLY BOUGHT TOGETHER -->
+    <div class="bundle-card">
+      <span class="bundle-tag">🔥 FREQUENTLY BOUGHT TOGETHER</span>
+      <h3 class="bundle-title">The Ultimate Daily Utility Combo</h3>
+      <p class="bundle-desc">8-in-1 Tech Cleaner Kit + 800 Lumens COB Keychain Work Light. Get both and save extra!</p>
+      <div class="bundle-items">
+        <img class="bundle-thumb" src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300&auto=format&fit=crop&q=80" alt="Cleaner">
+        <span class="bundle-plus">+</span>
+        <img class="bundle-thumb" src="https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=300&auto=format&fit=crop&q=80" alt="Light">
+      </div>
+      <div class="bundle-pricing">
+        <div class="bundle-price-box">
+          <span class="price">₹699</span>
+          <span class="mrp">₹1,899</span>
+          <span style="font-size: 11px; color: #34d399; font-weight: 700; margin-left: 8px;">(Save ₹1,200)</span>
+        </div>
+        <button class="btn-bundle" onclick="addBundleCombo()">+ ADD COMBO</button>
+      </div>
+    </div>
+
+    <!-- CATEGORY FILTER TABS -->
+    <div class="filter-tabs">
+      <button class="filter-btn active" onclick="filterCategory('all')">All Products</button>
+      <button class="filter-btn" onclick="filterCategory('tech')">Tech & Laptop</button>
+      <button class="filter-btn" onclick="filterCategory('car')">Car & Bike Safety</button>
+      <button class="filter-btn" onclick="filterCategory('utility')">Daily Carry</button>
+    </div>
+
+    <div class="section-title">
+      <span>Verified High-Trust Products</span>
+      <span style="font-size: 11px; color: #10b981;">✓ 100% In-Stock & Delivered via Delhivery</span>
+    </div>
+
+    <!-- PRODUCT CATALOG -->
+    <div class="product-grid" id="productGrid">
+      <!-- Item 1 -->
+      <div class="prod-item" data-cat="tech">
+        <img class="prod-thumb" src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=400&auto=format&fit=crop&q=80" alt="Cleaner">
+        <div class="prod-info">
+          <div class="prod-category">Tech & Laptop Utility</div>
+          <div class="prod-name">Multifunctional 8-in-1 Earphone & Keyboard Cleaning Kit</div>
+          <div class="prod-rating">★★★★★ 4.6 (1,420 reviews)</div>
+          <div class="prod-price-row">
+            <div>
+              <span class="prod-price">₹399</span>
+              <span class="prod-mrp">₹899</span>
+            </div>
+            <button class="btn-add" id="btn-prod_cleaner_8in1" onclick="toggleCart('prod_cleaner_8in1', '8-in-1 Cleaning Kit', 399)">+ ADD</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="prod-item" data-cat="utility">
+        <img class="prod-thumb" src="https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?w=400&auto=format&fit=crop&q=80" alt="Light">
+        <div class="prod-info">
+          <div class="prod-category">Everyday Carry / Emergency</div>
+          <div class="prod-name">800 Lumens COB USB-C Rechargeable Keychain Floodlight</div>
+          <div class="prod-rating">★★★★★ 4.7 (2,180 reviews)</div>
+          <div class="prod-price-row">
+            <div>
+              <span class="prod-price">₹449</span>
+              <span class="prod-mrp">₹999</span>
+            </div>
+            <button class="btn-add" id="btn-prod_cob_keychain_light" onclick="toggleCart('prod_cob_keychain_light', 'COB Keychain Light', 449)">+ ADD</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="prod-item" data-cat="car">
+        <img class="prod-thumb" src="https://images.unsplash.com/photo-1584438784894-089d6a62b8fa?w=400&auto=format&fit=crop&q=80" alt="Mount">
+        <div class="prod-info">
+          <div class="prod-category">Car & Mobile Gear</div>
+          <div class="prod-name">360° Folding Alloy Magnetic Car Phone Mount</div>
+          <div class="prod-rating">★★★★★ 4.5 (960 reviews)</div>
+          <div class="prod-price-row">
+            <div>
+              <span class="prod-price">₹499</span>
+              <span class="prod-mrp">₹1,199</span>
+            </div>
+            <button class="btn-add" id="btn-prod_magnetic_car_mount" onclick="toggleCart('prod_magnetic_car_mount', '360° Magnetic Car Mount', 499)">+ ADD</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="prod-item" data-cat="car">
+        <img class="prod-thumb" src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&auto=format&fit=crop&q=80" alt="Mirror Film">
+        <div class="prod-info">
+          <div class="prod-category">Automotive Safety</div>
+          <div class="prod-name">Nano Anti-Fog Rainproof Car Side Mirror Film (Pair)</div>
+          <div class="prod-rating">★★★★★ 4.4 (830 reviews)</div>
+          <div class="prod-price-row">
+            <div>
+              <span class="prod-price">₹299</span>
+              <span class="prod-mrp">₹699</span>
+            </div>
+            <button class="btn-add" id="btn-prod_anti_fog_mirror_film" onclick="toggleCart('prod_anti_fog_mirror_film', 'Anti-Fog Mirror Film (Pair)', 299)">+ ADD</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FLOATING CHECKOUT BAR -->
+  <div class="checkout-drawer" id="checkoutDrawer">
+    <div class="checkout-inner">
+      <div>
+        <div class="cart-summary-text"><span id="drawerItemCount">0</span> items selected</div>
+        <div class="cart-total-price">₹<span id="drawerTotal">0</span></div>
+      </div>
+      <button class="btn-checkout" onclick="openOrderModal()">
+        CASH ON DELIVERY CHECKOUT ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="order-modal-backdrop" id="orderModal">
+    <div class="order-modal">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+        <h3 style="font-size: 16px; font-weight: 800;">Fast Cash on Delivery Order</h3>
+        <span style="font-size: 20px; cursor: pointer; color: #94a3b8;" onclick="closeOrderModal()">✕</span>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.04); padding: 12px; border-radius: 12px; margin-bottom: 16px; font-size: 12px;" id="orderSummaryList">
+        <!-- items will be injected here -->
+      </div>
+
+      <form id="finalOrderForm">
+        <div class="input-group">
+          <label>Full Name *</label>
+          <input type="text" id="mCustName" placeholder="e.g. Sarthak Verma" required>
+        </div>
+        <div class="input-group">
+          <label>Mobile Number (for delivery SMS) *</label>
+          <input type="tel" id="mCustPhone" placeholder="10-digit mobile number" required pattern="[0-9]{10}">
+        </div>
+        <div class="input-group">
+          <label>Delivery Address (House/Street/Landmark) *</label>
+          <textarea id="mCustAddress" rows="2" placeholder="Full address" required></textarea>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <div class="input-group" style="flex: 1;">
+            <label>City *</label>
+            <input type="text" id="mCustCity" placeholder="City" required>
+          </div>
+          <div class="input-group" style="flex: 1;">
+            <label>Pincode *</label>
+            <input type="text" id="mCustPin" placeholder="Pincode" required pattern="[0-9]{6}">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit-order" id="btnConfirmFinal">
+          CONFIRM ORDER (CASH ON DELIVERY)
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let cart = {};
+
+    function toggleCart(id, title, price) {
+      if (cart[id]) {
+        delete cart[id];
+      } else {
+        cart[id] = { title, price, qty: 1 };
+      }
+      updateUI();
+    }
+
+    function addBundleCombo() {
+      cart['prod_cleaner_8in1'] = { title: '8-in-1 Cleaning Kit', price: 399, qty: 1 };
+      cart['prod_cob_keychain_light'] = { title: 'COB Keychain Light', price: 300, qty: 1 }; // Discounted combo price
+      updateUI();
+      openCheckout();
+    }
+
+    function updateUI() {
+      const keys = Object.keys(cart);
+      const count = keys.length;
+      document.getElementById('cartCount').innerText = count;
+
+      // Update button states
+      ['prod_cleaner_8in1', 'prod_cob_keychain_light', 'prod_magnetic_car_mount', 'prod_anti_fog_mirror_film'].forEach(id => {
+        const btn = document.getElementById('btn-' + id);
+        if (btn) {
+          if (cart[id]) {
+            btn.innerText = '✓ ADDED';
+            btn.classList.add('in-cart');
+          } else {
+            btn.innerText = '+ ADD';
+            btn.classList.remove('in-cart');
+          }
+        }
+      });
+
+      // Bottom drawer
+      const drawer = document.getElementById('checkoutDrawer');
+      if (count > 0) {
+        drawer.style.display = 'block';
+        let total = 0;
+        keys.forEach(k => total += cart[k].price);
+        document.getElementById('drawerItemCount').innerText = count;
+        document.getElementById('drawerTotal').innerText = total;
+      } else {
+        drawer.style.display = 'none';
+      }
+    }
+
+    function openCheckout() {
+      if (Object.keys(cart).length === 0) {
+        alert('Your cart is empty! Click + ADD on any product.');
+        return;
+      }
+      openOrderModal();
+    }
+
+    function openOrderModal() {
+      const summary = document.getElementById('orderSummaryList');
+      summary.innerHTML = '';
+      let total = 0;
+      Object.keys(cart).forEach(k => {
+        const item = cart[k];
+        total += item.price;
+        summary.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+          <span>${item.title}</span>
+          <span style="font-weight:700;">₹${item.price}</span>
+        </div>`;
+      });
+      summary.innerHTML += `<div style="border-top:1px solid #334155; margin-top:6px; padding-top:6px; display:flex; justify-content:space-between; font-weight:800; font-size:14px; color:#38bdf8;">
+        <span>Total Payable (COD):</span>
+        <span>₹${total}</span>
+      </div>`;
+      document.getElementById('orderModal').style.display = 'flex';
+    }
+
+    function closeOrderModal() {
+      document.getElementById('orderModal').style.display = 'none';
+    }
+
+    function filterCategory(cat) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      document.querySelectorAll('.prod-item').forEach(el => {
+        if (cat === 'all' || el.getAttribute('data-cat') === cat) {
+          el.style.display = 'flex';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    }
+
+    document.getElementById('finalOrderForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnConfirmFinal');
+      btn.innerText = 'Dispatching to Delhivery...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        const orderId = 'ORD-IND-' + Date.now().toString().slice(-6);
+        alert('🎉 ORDER PLACED SUCCESSFULLY!\n\nOrder ID: ' + orderId + '\nDelivery Partner: Delhivery Express\nPayment: Cash on Delivery\n\nYour parcel will arrive in 3-4 business days.');
+        cart = {};
+        updateUI();
+        closeOrderModal();
+      }, 700);
+    });
+  </script>
+</body>
+</html>
