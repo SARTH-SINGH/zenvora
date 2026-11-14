@@ -1,0 +1,38 @@
+name: Zenvora 24/7 Dropship Order Autopilot
+
+on:
+  issues:
+    types: [opened, reopened]
+  schedule:
+    - cron: '0 */2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  fulfill-orders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run Order Processor
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          python core/github_order_processor.py
+
+      - name: Commit Updated Orders Log
+        run: |
+          git config --global user.name "Zenvora Autopilot Bot"
+          git config --global user.email "bot@zenvora.in"
+          git add data/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update fulfillment logs [skip ci]" && git push)
